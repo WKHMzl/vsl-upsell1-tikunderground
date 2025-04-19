@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikUnderground Elite - Upsell</title>
+    <style>
+        /* Estilos gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f0f1a;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Cabeçalho HTML (Hook) */
+        .header-hook {
+            width: 100%;
+            background: linear-gradient(to right, #191930, #2c2c44);
+            border: 2px solid #ff4444;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .header-hook:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(255, 68, 68, 0.3);
+        }
+        
+        .header-hook h1 {
+            color: #ffffff;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .header-hook p {
+            color: #cccccc;
+            font-size: 18px;
+            margin-bottom: 15px;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .header-hook .warning {
+            color: #ff4444;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .warning-icon {
+            color: #ff4444;
+            font-size: 24px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Container do Vídeo - MODIFICADO para vídeo vertical */
+        .video-container {
+            width: 100%;
+            max-width: 500px; /* Ajustado para vídeo vertical */
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            background-color: #000;
+            aspect-ratio: 9 / 16; /* Alterado para proporção vertical */
+            margin: 0 auto; /* Centralizar o vídeo */
+        }
+        
+        /* Video */
+        #vsl-video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain; /* Mudado para 'contain' para preservar proporção vertical */
+        }
+        
+        /* Controles do vídeo personalizados */
+        .custom-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 4; /* AUMENTADO para ficar acima de outros elementos */
+        }
+        
+        .video-container:hover .custom-controls {
+            opacity: 1;
+        }
+        
+        .play-pause-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 10px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 4; /* AUMENTADO para ficar acima de outros elementos */
+        }
+        
+        /* Progress Bar Personalizada (Smart Progress) */
+        .progress-container {
+            flex: 1;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.3);
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 4; /* AUMENTADO para ficar acima de outros elementos */
+        }
+        
+        .smart-progress {
+            height: 100%;
+            background: linear-gradient(to right, #f77, #f44);
+            width: 0;
+            transition: width 0.1s linear;
+            border-radius: 5px;
+        }
+        
+        /* Overlay para autoplay mudo */
+        .autoplay-message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5; /* AUMENTADO para ficar acima do mini-hook */
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .autoplay-message.visible {
+            opacity: 1;
+        }
+        
+        .autoplay-message h3 {
+            font-size: clamp(18px, 5vw, 24px);
+            margin-bottom: 15px;
+            color: white;
+            text-align: center;
+            padding: 0 15px;
+        }
+        
+        .autoplay-message p {
+            font-size: clamp(14px, 4vw, 16px);
+            color: #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 0 15px;
+            max-width: 90%;
+        }
+        
+        .play-button {
+            width: clamp(50px, 15vw, 80px);
+            height: clamp(50px, 15vw, 80px);
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: all 0.3s ease;
+        }
+        
+        .play-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .play-button i {
+            font-size: clamp(24px, 8vw, 40px);
+            color: white;
+        }
+        
+        /* ThumbSniper (Thumbnails para retenção) */
+        .retention-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 6; /* AUMENTADO para ficar acima de tudo */
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+        }
+        
+        .retention-thumbnail.visible {
+            opacity: 1;
+        }
+        
+        .retention-thumbnail h3 {
+            font-size: clamp(18px, 5vw, 24px);
+            margin-bottom: 15px;
+            color: white;
+            text-align: center;
+        }
+        
+        .retention-thumbnail p {
+            font-size: clamp(14px, 4vw, 16px);
+            color: #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .retention-thumbnail .continue-btn {
+            padding: clamp(10px, 3vw, 12px) clamp(15px, 5vw, 24px);
+            background-color: #f44;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: clamp(14px, 4vw, 16px);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+            white-space: nowrap;
+        }
+        
+        .retention-thumbnail .continue-btn:hover {
+            background-color: #f55;
+        }
+        
+        /* Hooks secundários (Mini-Hooks) - MODIFICADO para não cobrir controles */
+        .mini-hook {
+            position: absolute;
+            bottom: 80px; /* MODIFICADO: posicionado acima da área de controles */
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 50, 50, 0.8);
+            padding: clamp(8px, 3vw, 12px) clamp(10px, 5vw, 20px);
+            text-align: center;
+            font-weight: bold;
+            z-index: 3; /* Abaixo dos controles e autoplay */
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+            font-size: clamp(12px, 3.5vw, 16px);
+        }
+        
+        .mini-hook.visible {
+            transform: translateY(0);
+        }
+        
+        /* Botão de Ação (Call to Action) */
+        .cta-button {
+            margin-top: 30px;
+            padding: clamp(15px, 4vw, 18px) clamp(25px, 8vw, 36px);
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: clamp(16px, 5vw, 20px);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .cta-button.visible {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(255, 68, 68, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+            }
+        }
+        
+        /* Responsividade avançada - MODIFICADA para vídeo vertical */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header-hook {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .header-hook h1 {
+                font-size: clamp(18px, 5vw, 24px);
+            }
+            
+            .header-hook p {
+                font-size: clamp(14px, 4vw, 16px);
+            }
+            
+            .header-hook .warning {
+                font-size: clamp(16px, 4.5vw, 18px);
+            }
+            
+            .video-container {
+                width: 80%; /* Menor largura em tablets */
+                max-width: 450px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header-hook {
+                padding: 12px;
+            }
+            
+            .video-container {
+                width: 95%; /* Ligeiramente menos amplo em telas pequenas */
+                aspect-ratio: 9 / 16; /* Manter proporção vertical */
+            }
+            
+            .custom-controls {
+                padding: 8px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho HTML (Hook) -->
+        <div class="header-hook" id="main-hook">
+            <h1>Parabéns por garantir seu acesso ao método do TikUnderground para faturar com TikTok!</h1>
+            <p>Assista esse vídeo curto abaixo até o final para garantir seu acesso e ter informações exclusivas para novos membros!</p>
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle warning-icon"></i>
+                <span>NÃO FECHE NEM ATUALIZE ESSA PÁGINA!!!</span>
+                <i class="fas fa-exclamation-triangle warning-icon"></i>
+            </div>
+        </div>
+        
+        <!-- Container do Vídeo -->
+        <div class="video-container">
+            <!-- Tag de Vídeo -->
+            <video id="vsl-video" preload="metadata">
+                <source src="assets/VídeoUp1-Leg2.mp4" type="video/mp4">
+                Seu navegador não suporta o elemento de vídeo.
+            </video>
+            
+            <!-- Controles personalizados -->
+            <div class="custom-controls">
+                <button class="play-pause-btn" id="play-pause-btn">
+                    <i class="fas fa-play" id="play-icon"></i>
+                </button>
+                <div class="progress-container">
+                    <div class="smart-progress" id="smart-progress"></div>
+                </div>
+            </div>
+            
+            <!-- Overlay para autoplay mudo -->
+            <div class="autoplay-message" id="autoplay-message">
+                <h3>Seu vídeo já está rodando</h3>
+                <p>Clique para ativar o som e ver o vídeo desde o início</p>
+                <div class="play-button">
+                    <i class="fas fa-volume-up"></i>
+                </div>
+            </div>
+            
+            <!-- ThumbSniper - Thumbnail para retenção (início) -->
+            <div class="retention-thumbnail" id="retention-thumbnail-early">
+                <h3>Não perca essa oportunidade única!</h3>
+                <p>Esta é a maneira mais rápida de escalar seus resultados no TikTok sem precisar criar conteúdo manualmente todo dia.</p>
+                <button class="continue-btn">CONTINUAR ASSISTINDO</button>
+            </div>
+            
+            <!-- ThumbSniper - Thumbnail para conversão (final) -->
+            <div class="retention-thumbnail" id="retention-thumbnail-late">
+                <h3>OFERTA POR TEMPO LIMITADO!</h3>
+                <p>Esse preço especial de R$29,90 está disponível apenas por 24 horas após sua compra do guia principal.</p>
+                <button class="continue-btn">CONTINUAR ASSISTINDO</button>
+            </div>
+            
+            <!-- Mini-Hook (mensagem durante o vídeo) -->
+            <div class="mini-hook" id="mini-hook">
+                Assista até o final para descobrir como automatizar seu processo e ganhar 10x mais!
+            </div>
+        </div>
+        
+        <!-- Botão de Ação -->
+        <button class="cta-button" id="cta-button">
+            Acessar Agora
+        </button>
+    </div>
+
+    <script>
+        // Elementos do DOM
+        const video = document.getElementById('vsl-video');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playIcon = document.getElementById('play-icon');
+        const smartProgress = document.getElementById('smart-progress');
+        const autoplayMessage = document.getElementById('autoplay-message');
+        const mainHook = document.getElementById('main-hook');
+        const retentionThumbnailEarly = document.getElementById('retention-thumbnail-early');
+        const retentionThumbnailLate = document.getElementById('retention-thumbnail-late');
+        const miniHook = document.getElementById('mini-hook');
+        const ctaButton = document.getElementById('cta-button');
+        
+        // Configurações
+        const showCtaAt = 0.7; // Mostrar CTA quando o vídeo atingir 70% de reprodução
+        const earlyDropOffPoint = 0.3; // Ponto de abandono inicial (30% do vídeo)
+        const lateDropOffPoint = 0.6; // Ponto de abandono tardio (60% do vídeo)
+        const miniHookShowTime = 0.4; // Mostrar mini-hook em 40% do vídeo
+        const speedUpFactor = 3; // Fator de aceleração da barra no início
+        
+        // Estado
+        let isPaused = true;
+        let userPaused = false;
+        let showedEarlyThumbnail = false;
+        let showedLateThumbnail = false;
+        let showedMiniHook = false;
+        
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', () => {
+            // Definir tamanho do vídeo com base na proporção de aspecto
+            updateVideoSize();
+            window.addEventListener('resize', updateVideoSize);
+            
+            // Tentar autoplay assim que a página carregar
+            tryAutoplay();
+            
+            // Clicar no hook principal também inicia o vídeo
+            mainHook.addEventListener('click', () => {
+                if (isPaused) {
+                    playVideo();
+                    // Rolar suavemente para o vídeo
+                    document.querySelector('.video-container').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            });
+            
+            // Player e controles
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            video.addEventListener('click', togglePlayPause);
+            video.addEventListener('timeupdate', updateSmartProgress);
+            video.addEventListener('ended', videoEnded);
+            
+            // ThumbSniper events
+            retentionThumbnailEarly.querySelector('.continue-btn').addEventListener('click', () => {
+                retentionThumbnailEarly.classList.remove('visible');
+                playVideo();
+            });
+            
+            retentionThumbnailLate.querySelector('.continue-btn').addEventListener('click', () => {
+                retentionThumbnailLate.classList.remove('visible');
+                playVideo();
+            });
+            
+            // Autoplay message - MODIFICADO para garantir o reinício e som
+            autoplayMessage.addEventListener('click', () => {
+                autoplayMessage.classList.remove('visible');
+                
+                // Reiniciar o vídeo do início
+                video.currentTime = 0;
+                
+                // Garantir que o som esteja ativado
+                video.muted = false;
+                
+                // Forçar uma pequena pausa antes de dar play (ajuda com problemas de áudio)
+                pauseVideo();
+                
+                // Pequeno delay para garantir que o som funcione
+                setTimeout(() => {
+                    playVideo();
+                }, 100);
+            });
+        });
+        
+        // Atualizar dimensões do vídeo com base no tamanho da tela
+        function updateVideoSize() {
+            // Ajustes adicionais para diferentes dispositivos
+            const isMobile = window.innerWidth <= 768;
+            const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+            const isDesktop = window.innerWidth > 1024;
+            
+            // Ajustes específicos para cada tipo de dispositivo
+            if (isMobile) {
+                document.querySelector('.custom-controls').style.padding = '8px';
+            } else if (isTablet) {
+                // Ajustes específicos para tablet
+            } else if (isDesktop) {
+                // Ajustes específicos para desktop
+            }
+        }
+        
+        // Tenta iniciar autoplay
+        function tryAutoplay() {
+            // Iniciar vídeo mudo (para contornar as restrições de autoplay)
+            video.muted = true;
+            
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Autoplay permitido!
+                    isPaused = false;
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause');
+                    
+                    // Mostrar mensagem para ativar som
+                    autoplayMessage.classList.add('visible');
+                }).catch(error => {
+                    // Autoplay não permitido
+                    console.log('Autoplay prevented:', error);
+                    
+                    // Mostrar mensagem para iniciar manualmente
+                    autoplayMessage.classList.add('visible');
+                });
+            }
+        }
+        
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (video.paused) {
+                playVideo();
+            } else {
+                pauseVideo();
+                userPaused = true;
+                
+                // Implementação do ThumbSniper - Mostrar thumbnail quando pausado
+                const progress = video.currentTime / video.duration;
+                
+                if (progress < earlyDropOffPoint && !showedEarlyThumbnail) {
+                    retentionThumbnailEarly.classList.add('visible');
+                    showedEarlyThumbnail = true;
+                } else if (progress >= earlyDropOffPoint && progress < lateDropOffPoint && !showedLateThumbnail) {
+                    retentionThumbnailLate.classList.add('visible');
+                    showedLateThumbnail = true;
+                }
+            }
+        }
+        
+        // Play video
+        function playVideo() {
+            // Verificar se o vídeo está pronto para reprodução
+            if (video.readyState >= 2) {
+                video.play()
+                    .then(() => {
+                        isPaused = false;
+                        playIcon.classList.remove('fa-play');
+                        playIcon.classList.add('fa-pause');
+                        autoplayMessage.classList.remove('visible');
+                    })
+                    .catch(error => {
+                        console.error('Play failed:', error);
+                        // Tentar novamente com mudo
+                        video.muted = true;
+                        video.play()
+                            .then(() => {
+                                isPaused = false;
+                                playIcon.classList.remove('fa-play');
+                                playIcon.classList.add('fa-pause');
+                                // Mostrar mensagem para ativar som
+                                autoplayMessage.classList.add('visible');
+                            });
+                    });
+            } else {
+                // Aguardar pelo carregamento
+                video.addEventListener('canplay', function playWhenReady() {
+                    video.removeEventListener('canplay', playWhenReady);
+                    playVideo();
+                });
+            }
+        }
+        
+        // Pause video
+        function pauseVideo() {
+            video.pause();
+            isPaused = true;
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+        }
+        
+        // Update Smart Progress Bar
+        function updateSmartProgress() {
+            // Implementação da barra de progresso inteligente
+            const currentTime = video.currentTime;
+            const duration = video.duration;
+            
+            if (duration) {
+                // Cálculo do progresso real
+                const realProgress = currentTime / duration;
+                
+                // Ajuste da velocidade da barra (mais rápida no início, normal no final)
+                let adjustedProgress;
+                if (realProgress < 0.3) {
+                    // Início do vídeo: progredir mais rápido
+                    adjustedProgress = realProgress * speedUpFactor;
+                } else {
+                    // Resto do vídeo: velocidade normal + ajuste para compensar o início rápido
+                    adjustedProgress = 0.3 * speedUpFactor + (realProgress - 0.3) * 0.7 / 0.7;
+                }
+                
+                // Limitar o progresso a 100%
+                adjustedProgress = Math.min(adjustedProgress, 1);
+                
+                // Atualizar a largura da barra de progresso
+                smartProgress.style.width = (adjustedProgress * 100) + '%';
+                
+                // Mostrar o CTA quando atingir determinado ponto
+                if (realProgress >= showCtaAt && !ctaButton.classList.contains('visible')) {
+                    ctaButton.classList.add('visible');
+                    
+                    // Rolar suavemente para o botão
+                    setTimeout(() => {
+                        ctaButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                }
+                
+                // Mostrar Mini-Hook em momento estratégico
+                if (realProgress >= miniHookShowTime && !showedMiniHook) {
+                    miniHook.classList.add('visible');
+                    showedMiniHook = true;
+                    
+                    // Esconder o Mini-Hook após alguns segundos
+                    setTimeout(() => {
+                        miniHook.classList.remove('visible');
+                    }, 5000);
+                }
+            }
+        }
+        
+        // Video ended
+        function videoEnded() {
+            isPaused = true;
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            
+            // Garantir que o CTA esteja visível
+            if (!ctaButton.classList.contains('visible')) {
+                ctaButton.classList.add('visible');
+                ctaButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        // Integração com botão CTA
+        ctaButton.addEventListener('click', () => {
+            // Redirecionar para página de compra
+            window.location.href = 'https://pay.kiwify.com.br/BB2t1Zt';
+        });
+        
+        // Detectar e lidar com diferentes dispositivos
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isIOS = /iphone|ipad|ipod/.test(userAgent);
+            const isAndroid = /android/.test(userAgent);
+            const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+            
+            // Aplicar ajustes específicos com base no dispositivo
+            if (isIOS) {
+                // Ajustes para iOS
+                document.documentElement.classList.add('ios-device');
+            } else if (isAndroid) {
+                // Ajustes para Android
+                document.documentElement.classList.add('android-device');
+            }
+            
+            if (isTablet) {
+                // Ajustes para tablets
+                document.documentElement.classList.add('tablet-device');
+            }
+        }
+        
+        // Inicializar detecção de dispositivo
+        detectDevice();
+        
+        // Prevenção de saída da página
+        window.addEventListener('beforeunload', (e) => {
+            // A mensagem não aparecerá em navegadores modernos por segurança,
+            // mas ainda ajuda a acionar o diálogo padrão
+            const message = 'Tem certeza que deseja sair? Sua oferta exclusiva será perdida!';
+            e.returnValue = message;
+            return message;
+        });
+    </script>
+</body>
+</html>
