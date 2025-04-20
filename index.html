@@ -96,6 +96,17 @@
             margin: 0 auto; /* Centralizar horizontalmente */
         }
         
+        /* Bloqueador de interações com o YouTube */
+        .youtube-blocker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10; /* Acima do iframe, abaixo dos nossos controles */
+            cursor: pointer;
+        }
+        
         /* YouTube Iframe */
         .youtube-embed {
             position: absolute;
@@ -580,7 +591,7 @@
                 </button>
             </div>
             
-        <!-- Smart Progress Bar e Controles Personalizados -->
+                    <!-- Smart Progress Bar e Controles Personalizados -->
             <div class="custom-controls" id="custom-controls">
                 <button class="play-pause-btn" id="play-pause-btn">
                     <i class="fas fa-pause" id="play-pause-icon"></i>
@@ -588,10 +599,17 @@
                 <div class="progress-container" id="progress-container">
                     <div class="smart-progress" id="smart-progress"></div>
                 </div>
+            </div>
+            
+            <!-- Botão de tela cheia sempre visível -->
+            <div class="fullscreen-btn-container" id="fullscreen-btn-container">
                 <button class="fullscreen-btn" id="fullscreen-btn">
-                    <i class="fas fa-expand"></i>
+                    <i class="fas fa-expand" id="fullscreen-icon"></i>
                 </button>
             </div>
+            
+            <!-- Bloqueador de interações com o YouTube -->
+            <div class="youtube-blocker" id="youtube-blocker"></div>
         </div>
         
         <!-- Mini-Hook (movido para fora do vídeo) -->
@@ -760,6 +778,9 @@
             
             // Inicializar variável para controle de cliques nos CTAs
             window.clickedCTA = false;
+            
+            // Configurar timer inicial para ocultar os controles após 3 segundos
+            resetControlsHideTimer();
         }
         
         // Configurar os listeners de eventos
@@ -848,6 +869,9 @@
             
             // Atualizar o ícone do botão play/pause
             playPauseIcon.className = 'fas fa-pause';
+            
+            // Iniciar o timer para ocultar os controles
+            resetControlsHideTimer();
         }
         
         // Alternar play/pause
@@ -899,9 +923,47 @@
                         !!document.mozFullScreenElement ||
                         !!document.msFullscreenElement;
             
-            fullscreenBtn.innerHTML = isFullscreen ? 
-                '<i class="fas fa-compress"></i>' : 
-                '<i class="fas fa-expand"></i>';
+            const fullscreenIcon = document.getElementById('fullscreen-icon');
+            fullscreenIcon.className = isFullscreen ? 
+                'fas fa-compress' : 
+                'fas fa-expand';
+            
+            // Mostrar controles brevemente quando mudar o estado da tela cheia
+            showControls();
+            resetControlsHideTimer();
+        }
+        
+        // Variáveis para gerenciar a visibilidade dos controles
+        let controlsHideTimer;
+        
+        // Mostrar os controles
+        function showControls() {
+            const customControls = document.getElementById('custom-controls');
+            customControls.classList.remove('hidden');
+        }
+        
+        // Esconder os controles
+        function hideControls() {
+            const customControls = document.getElementById('custom-controls');
+            customControls.classList.add('hidden');
+        }
+        
+        // Resetar o timer de ocultação dos controles
+        function resetControlsHideTimer() {
+            clearTimeout(controlsHideTimer);
+            controlsHideTimer = setTimeout(hideControls, 3000); // Ocultar após 3 segundos
+        }
+        
+        // Alternar a visibilidade dos controles
+        function toggleControlsVisibility() {
+            const customControls = document.getElementById('custom-controls');
+            
+            if (customControls.classList.contains('hidden')) {
+                showControls();
+                resetControlsHideTimer();
+            } else {
+                hideControls();
+            }
         }
         
         // Verificar o estado do player
@@ -926,10 +988,18 @@
                 
                 // Certificar-se de que o intervalo de progresso está rodando
                 startProgressChecking();
+                
+                // Ocultar controles após alguns segundos
+                resetControlsHideTimer();
             } else if (event.data === YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 playPauseIcon.className = 'fas fa-play';
                 pauseOverlay.classList.add('visible');
+                
+                // Mostrar controles quando pausado
+                showControls();
+                // Não ocultar os controles enquanto estiver pausado
+                clearTimeout(controlsHideTimer);
             }
             
             if (event.data === YT.PlayerState.ENDED) {
@@ -943,6 +1013,10 @@
                 
                 // Parar a verificação de progresso
                 clearInterval(progressInterval);
+                
+                // Mostrar controles no final do vídeo
+                showControls();
+                clearTimeout(controlsHideTimer);
             }
         }
         
