@@ -34,8 +34,8 @@
         /* Cabeçalho HTML (Hook) */
         .header-hook {
             width: 100%;
-            background: linear-gradient(to right, #191930, #2c2c44);
-            border: 2px solid #ff4444;
+            background: linear-gradient(to right, #191930, #0f3b33);
+            border: 2px solid #00d170;
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 25px;
@@ -47,7 +47,7 @@
         
         .header-hook:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(255, 68, 68, 0.3);
+            box-shadow: 0 6px 25px rgba(0, 209, 112, 0.3);
         }
         
         .header-hook h1 {
@@ -67,7 +67,7 @@
         }
         
         .header-hook .warning {
-            color: #ff4444;
+            color: #00e687;
             font-size: 20px;
             font-weight: bold;
             margin-top: 10px;
@@ -78,67 +78,71 @@
         }
         
         .warning-icon {
-            color: #ff4444;
+            color: #00e687;
             font-size: 24px;
             animation: pulse 1.5s infinite;
         }
         
-        /* Container do Vídeo - MODIFICADO para vídeo vertical */
+        /* Container do Vídeo */
         .video-container {
             width: 100%;
-            max-width: 500px; /* Ajustado para vídeo vertical */
+            max-width: 500px; /* Limitar a largura para vídeos verticais */
             position: relative;
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
             background-color: #000;
-            aspect-ratio: 9 / 16; /* Alterado para proporção vertical */
-            margin: 0 auto; /* Centralizar o vídeo */
+            aspect-ratio: 9 / 16; /* Proporção para vídeos verticais (9:16) */
+            margin: 0 auto; /* Centralizar horizontalmente */
         }
         
-        /* Video */
-        #vsl-video {
+        /* YouTube Iframe */
+        .youtube-embed {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            display: block;
-            object-fit: contain; /* Mudado para 'contain' para preservar proporção vertical */
         }
         
-        /* Controles do vídeo personalizados */
+        /* Fix para ocultar o título e controles do YouTube */
+        .youtube-embed::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Altura suficiente para cobrir a parte superior do player */
+            background-color: #000;
+            z-index: 11;
+        }
+        
+        /* Fix para ocultar o título e controles do YouTube */
+        .youtube-embed::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Altura suficiente para cobrir a parte superior do player */
+            background-color: #000;
+            z-index: 11;
+        }
+        
+        /* Smart Progress Bar Personalizada */
         .custom-controls {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-            padding: 10px;
+            height: 40px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 5px 10px;
             display: flex;
             align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 4; /* AUMENTADO para ficar acima de outros elementos */
+            z-index: 12;
         }
         
-        .video-container:hover .custom-controls {
-            opacity: 1;
-        }
-        
-        .play-pause-btn {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            margin-right: 10px;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 4; /* AUMENTADO para ficar acima de outros elementos */
-        }
-        
-        /* Progress Bar Personalizada (Smart Progress) */
         .progress-container {
             flex: 1;
             height: 5px;
@@ -146,19 +150,149 @@
             position: relative;
             border-radius: 5px;
             overflow: hidden;
-            z-index: 4; /* AUMENTADO para ficar acima de outros elementos */
+            cursor: pointer;
+            margin-right: 10px;
         }
         
         .smart-progress {
             height: 100%;
-            background: linear-gradient(to right, #f77, #f44);
+            background: linear-gradient(to right, #0de6a0, #00b8c4);
             width: 0;
-            transition: width 0.1s linear;
+            transition: width 0.3s ease-out;
             border-radius: 5px;
         }
         
-        /* Overlay para autoplay mudo */
-        .autoplay-message {
+        .fullscreen-btn, .play-pause-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 13;
+            transition: all 0.2s ease;
+        }
+        
+        .play-pause-btn {
+            margin-right: 10px;
+        }
+        
+        .fullscreen-btn:hover, .play-pause-btn:hover {
+            color: #0de6a0;
+        }
+        
+        /* Botão de volume inteligente */
+        .volume-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 13;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .volume-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Mensagem de pausa do vídeo */
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 40;
+            text-align: center;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .pause-overlay.visible {
+            display: flex;
+        }
+        
+        .pause-message {
+            color: white;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: bold;
+            max-width: 90%;
+            line-height: 1.4;
+        }
+        
+        .highlight-text {
+            color: #0de6a0;
+            font-weight: bold;
+        }
+        
+        .continue-button {
+            padding: 10px 25px;
+            background-color: #00d170;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: clamp(14px, 3vw, 16px);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 209, 112, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .continue-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 209, 112, 0.6);
+        }
+        
+        /* Mini-Hook movido para baixo do vídeo */
+        .mini-hook {
+            width: 100%;
+            background-color: rgba(0, 209, 112, 0.7);
+            padding: clamp(8px, 3vw, 12px) clamp(10px, 5vw, 20px);
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            border-radius: 8px;
+            font-size: clamp(12px, 3.5vw, 16px);
+            display: none;
+            /* Animação sutil, mais suave que os CTAs */
+            animation: subtle-glow 3s infinite alternate;
+        }
+        
+        .mini-hook.visible {
+            display: block;
+        }
+        
+        @keyframes subtle-glow {
+            0% {
+                box-shadow: 0 0 5px rgba(0, 209, 112, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(0, 209, 112, 0.5);
+            }
+        }
+        
+        /* Overlay personalizado de play */
+        .video-overlay {
             position: absolute;
             top: 0;
             left: 0;
@@ -169,17 +303,15 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 5; /* AUMENTADO para ficar acima do mini-hook */
+            z-index: 15;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
         
-        .autoplay-message.visible {
-            opacity: 1;
+        .video-overlay.hidden {
+            display: none;
         }
         
-        .autoplay-message h3 {
+        .video-overlay h3 {
             font-size: clamp(18px, 5vw, 24px);
             margin-bottom: 15px;
             color: white;
@@ -187,7 +319,7 @@
             padding: 0 15px;
         }
         
-        .autoplay-message p {
+        .video-overlay p {
             font-size: clamp(14px, 4vw, 16px);
             color: #ccc;
             margin-bottom: 20px;
@@ -219,119 +351,128 @@
             color: white;
         }
         
-        /* ThumbSniper (Thumbnails para retenção) */
-        .retention-thumbnail {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+        /* Botões de Ação (Call to Action) */
+        .cta-container {
+            width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            z-index: 6; /* AUMENTADO para ficar acima de tudo */
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-        }
-        
-        .retention-thumbnail.visible {
-            opacity: 1;
-        }
-        
-        .retention-thumbnail h3 {
-            font-size: clamp(18px, 5vw, 24px);
-            margin-bottom: 15px;
-            color: white;
-            text-align: center;
-        }
-        
-        .retention-thumbnail p {
-            font-size: clamp(14px, 4vw, 16px);
-            color: #ccc;
-            margin-bottom: 20px;
-            text-align: center;
-            max-width: 90%;
-        }
-        
-        .retention-thumbnail .continue-btn {
-            padding: clamp(10px, 3vw, 12px) clamp(15px, 5vw, 24px);
-            background-color: #f44;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: clamp(14px, 4vw, 16px);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 15px;
-            white-space: nowrap;
-        }
-        
-        .retention-thumbnail .continue-btn:hover {
-            background-color: #f55;
-        }
-        
-        /* Hooks secundários (Mini-Hooks) - MODIFICADO para não cobrir controles */
-        .mini-hook {
-            position: absolute;
-            bottom: 80px; /* MODIFICADO: posicionado acima da área de controles */
-            left: 0;
-            right: 0;
-            background-color: rgba(255, 50, 50, 0.8);
-            padding: clamp(8px, 3vw, 12px) clamp(10px, 5vw, 20px);
-            text-align: center;
-            font-weight: bold;
-            z-index: 3; /* Abaixo dos controles e autoplay */
-            transform: translateY(100%);
-            transition: transform 0.5s ease;
-            font-size: clamp(12px, 3.5vw, 16px);
-        }
-        
-        .mini-hook.visible {
-            transform: translateY(0);
-        }
-        
-        /* Botão de Ação (Call to Action) */
-        .cta-button {
             margin-top: 30px;
-            padding: clamp(15px, 4vw, 18px) clamp(25px, 8vw, 36px);
-            background-color: #ff4444;
+            gap: 15px;
+        }
+        
+        .cta-button {
+            width: 100%;
+            max-width: 500px;
+            padding: clamp(15px, 4vw, 20px) clamp(25px, 8vw, 36px);
+            background: linear-gradient(135deg, #ff5a5f, #ff3b3f);
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: clamp(16px, 5vw, 20px);
+            font-size: clamp(17px, 5vw, 22px);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             display: none;
-            max-width: 90%;
             text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 59, 63, 0.5);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         
         .cta-button.visible {
             display: block;
-            animation: pulse 1.5s infinite;
+            animation: pulse-cta 1.5s infinite;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: linear-gradient(135deg, #ff3b3f, #ff2a2f);
+            box-shadow: 0 6px 25px rgba(255, 59, 63, 0.6);
+        }
+        
+        .cta-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(255, 59, 63, 0.4);
+        }
+        
+        @keyframes pulse-cta {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(255, 59, 63, 0.5);
+            }
+            70% {
+                transform: scale(1.03);
+                box-shadow: 0 0 25px rgba(255, 59, 63, 0.7);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(255, 59, 63, 0.5);
+            }
+        }
+        
+        /* Estilos para o temporizador de escassez */
+        .timer-container {
+            display: none;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .timer-container.visible {
+            display: block;
+        }
+        
+        .timer-label {
+            font-size: 14px;
+            color: #cccccc;
+            margin-bottom: 5px;
+        }
+        
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .timer-unit {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+        
+        .timer-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00d170;
+        }
+        
+        .timer-unit-label {
+            font-size: 12px;
+            color: #cccccc;
         }
         
         @keyframes pulse {
             0% {
                 transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+                box-shadow: 0 0 0 0 rgba(0, 209, 112, 0.7);
             }
             70% {
                 transform: scale(1.05);
-                box-shadow: 0 0 0 10px rgba(255, 68, 68, 0);
+                box-shadow: 0 0 0 10px rgba(0, 209, 112, 0);
             }
             100% {
                 transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+                box-shadow: 0 0 0 0 rgba(0, 209, 112, 0);
             }
         }
         
-        /* Responsividade avançada - MODIFICADA para vídeo vertical */
+        /* Responsividade avançada */
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -354,9 +495,21 @@
                 font-size: clamp(16px, 4.5vw, 18px);
             }
             
-            .video-container {
-                width: 80%; /* Menor largura em tablets */
-                max-width: 450px;
+            .timer {
+                gap: 10px;
+            }
+            
+            .timer-unit {
+                min-width: 45px;
+                padding: 6px 8px;
+            }
+            
+            .timer-value {
+                font-size: 18px;
+            }
+            
+            .timer-unit-label {
+                font-size: 10px;
             }
         }
         
@@ -369,13 +522,9 @@
                 padding: 12px;
             }
             
-            .video-container {
-                width: 95%; /* Ligeiramente menos amplo em telas pequenas */
-                aspect-ratio: 9 / 16; /* Manter proporção vertical */
-            }
-            
-            .custom-controls {
-                padding: 8px;
+            .timer-unit {
+                min-width: 40px;
+                padding: 5px 6px;
             }
         }
     </style>
@@ -395,348 +544,509 @@
         </div>
         
         <!-- Container do Vídeo -->
-        <div class="video-container">
-            <!-- Tag de Vídeo -->
-            <video id="vsl-video" preload="metadata">
-                <source src="assets/VídeoUp1-Leg2.mp4" type="video/mp4">
-                Seu navegador não suporta o elemento de vídeo.
-            </video>
+        <div class="video-container" id="video-container">
+            <!-- Overlay personalizado para iniciar o vídeo -->
+            <div class="video-overlay" id="video-overlay">
+                <h3>Seu vídeo está pronto para começar</h3>
+                <p>Clique para assistir as informações exclusivas para novos membros</p>
+                <div class="play-button">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
             
-            <!-- Controles personalizados -->
-            <div class="custom-controls">
-                <button class="play-pause-btn" id="play-pause-btn">
-                    <i class="fas fa-play" id="play-icon"></i>
+            <!-- O iframe do YouTube será inserido aqui via JavaScript -->
+            <div id="youtube-player-container" class="youtube-embed"></div>
+            
+            <!-- Notificação de pausa do vídeo -->
+            <div class="pause-overlay" id="pause-overlay">
+                <div class="pause-message">
+                    <p>Você está a apenas <span class="highlight-text">3 minutos</span> de descobrir como transformar seus perfis do TikTok em máquinas de resultados!</p>
+                    <p style="margin-top: 10px">As pessoas que assistem este vídeo até o final têm <span class="highlight-text">10x mais chances</span> de alcançar o sucesso no método.</p>
+                </div>
+                <button class="continue-button" id="continue-button">
+                    <i class="fas fa-play"></i> Continuar Assistindo
                 </button>
-                <div class="progress-container">
+            </div>
+            
+        <!-- Smart Progress Bar e Controles Personalizados -->
+            <div class="custom-controls" id="custom-controls">
+                <button class="play-pause-btn" id="play-pause-btn">
+                    <i class="fas fa-pause" id="play-pause-icon"></i>
+                </button>
+                <div class="progress-container" id="progress-container">
                     <div class="smart-progress" id="smart-progress"></div>
                 </div>
-            </div>
-            
-            <!-- Overlay para autoplay mudo -->
-            <div class="autoplay-message" id="autoplay-message">
-                <h3>Seu vídeo já está rodando</h3>
-                <p>Clique para ativar o som e ver o vídeo desde o início</p>
-                <div class="play-button">
-                    <i class="fas fa-volume-up"></i>
-                </div>
-            </div>
-            
-            <!-- ThumbSniper - Thumbnail para retenção (início) -->
-            <div class="retention-thumbnail" id="retention-thumbnail-early">
-                <h3>Não perca essa oportunidade única!</h3>
-                <p>Esta é a maneira mais rápida de escalar seus resultados no TikTok sem precisar criar conteúdo manualmente todo dia.</p>
-                <button class="continue-btn">CONTINUAR ASSISTINDO</button>
-            </div>
-            
-            <!-- ThumbSniper - Thumbnail para conversão (final) -->
-            <div class="retention-thumbnail" id="retention-thumbnail-late">
-                <h3>OFERTA POR TEMPO LIMITADO!</h3>
-                <p>Esse preço especial de R$29,90 está disponível apenas por 24 horas após sua compra do guia principal.</p>
-                <button class="continue-btn">CONTINUAR ASSISTINDO</button>
-            </div>
-            
-            <!-- Mini-Hook (mensagem durante o vídeo) -->
-            <div class="mini-hook" id="mini-hook">
-                Assista até o final para descobrir como automatizar seu processo e ganhar 10x mais!
+                <button class="fullscreen-btn" id="fullscreen-btn">
+                    <i class="fas fa-expand"></i>
+                </button>
             </div>
         </div>
         
-        <!-- Botão de Ação -->
-        <button class="cta-button" id="cta-button">
-            Acessar Agora
-        </button>
+        <!-- Mini-Hook (movido para fora do vídeo) -->
+        <div class="mini-hook" id="mini-hook">
+            Assista até o final para descobrir como automatizar seu processo e ganhar 10x mais!
+        </div>
+        
+        <!-- Container de CTAs -->
+        <div class="cta-container" id="cta-container">
+            <!-- Primeiro CTA (Aparece aos 70% do vídeo) -->
+            <button class="cta-button" id="cta-button-first">
+                <i class="fas fa-bolt"></i> Quero Automatizar Meus Resultados <i class="fas fa-bolt"></i>
+            </button>
+            
+            <!-- CTA principal (Aparece no final do vídeo) -->
+            <button class="cta-button" id="cta-button-final">
+                <i class="fas fa-rocket"></i> Acessar Agora o Módulo de Automação Elite <i class="fas fa-rocket"></i>
+            </button>
+            
+            <!-- Temporizador de escassez -->
+            <div class="timer-container" id="timer-container">
+                <div class="timer-label">Esta oferta expira em:</div>
+                <div class="timer">
+                    <div class="timer-unit">
+                        <span class="timer-value" id="hours">14</span>
+                        <span class="timer-unit-label">horas</span>
+                    </div>
+                    <div class="timer-unit">
+                        <span class="timer-value" id="minutes">59</span>
+                        <span class="timer-unit-label">min</span>
+                    </div>
+                    <div class="timer-unit">
+                        <span class="timer-value" id="seconds">59</span>
+                        <span class="timer-unit-label">seg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Elementos do DOM
-        const video = document.getElementById('vsl-video');
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const playIcon = document.getElementById('play-icon');
-        const smartProgress = document.getElementById('smart-progress');
-        const autoplayMessage = document.getElementById('autoplay-message');
-        const mainHook = document.getElementById('main-hook');
-        const retentionThumbnailEarly = document.getElementById('retention-thumbnail-early');
-        const retentionThumbnailLate = document.getElementById('retention-thumbnail-late');
-        const miniHook = document.getElementById('mini-hook');
-        const ctaButton = document.getElementById('cta-button');
-        
         // Configurações
-        const showCtaAt = 0.7; // Mostrar CTA quando o vídeo atingir 70% de reprodução
-        const earlyDropOffPoint = 0.3; // Ponto de abandono inicial (30% do vídeo)
-        const lateDropOffPoint = 0.6; // Ponto de abandono tardio (60% do vídeo)
-        const miniHookShowTime = 0.4; // Mostrar mini-hook em 40% do vídeo
-        const speedUpFactor = 3; // Fator de aceleração da barra no início
+        const youtubeVideoId = 'hv1pH5TmHZY'; // Substitua pelo ID do seu vídeo
+        const videoDuration = 330; // Duração do vídeo em segundos (5 minutos e 30 segundos)
+        const artificialDuration = 180; // Duração "fake" mostrada para o usuário (3 minutos)
+        const showFirstCtaAt = 70; // Mostrar primeiro CTA quando atingir 70% do vídeo
+        const showFinalCtaAt = 95; // Mostrar CTA final quando atingir 95% do vídeo
+        const miniHookShowTime = 40; // Mostrar mini-hook em 40% (em porcentagem)
+        
+        // Elementos DOM
+        const videoOverlay = document.getElementById('video-overlay');
+        const playerContainer = document.getElementById('youtube-player-container');
+        const mainHook = document.getElementById('main-hook');
+        const miniHook = document.getElementById('mini-hook');
+        const ctaButtonFirst = document.getElementById('cta-button-first');
+        const ctaButtonFinal = document.getElementById('cta-button-final');
+        const ctaContainer = document.getElementById('cta-container');
+        const timerContainer = document.getElementById('timer-container');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playPauseIcon = document.getElementById('play-pause-icon');
+        const pauseOverlay = document.getElementById('pause-overlay');
+        const continueButton = document.getElementById('continue-button');
+        const smartProgress = document.getElementById('smart-progress');
+        const progressContainer = document.getElementById('progress-container');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const videoContainer = document.getElementById('video-container');
+        const customControls = document.getElementById('custom-controls');
+        const hoursElem = document.getElementById('hours');
+        const minutesElem = document.getElementById('minutes');
+        const secondsElem = document.getElementById('seconds');
         
         // Estado
-        let isPaused = true;
-        let userPaused = false;
-        let showedEarlyThumbnail = false;
-        let showedLateThumbnail = false;
+        let player;
+        let isFullscreen = false;
+        let videoStarted = false;
+        let isPlaying = true;
         let showedMiniHook = false;
+        let firstCtaShown = false;
+        let finalCtaShown = false;
+        let progressInterval;
+        let timerInterval;
+        let countdownEndTime;
+        let lastUpdateTime = 0;
         
-        // Inicialização
-        window.addEventListener('DOMContentLoaded', () => {
-            // Definir tamanho do vídeo com base na proporção de aspecto
-            updateVideoSize();
-            window.addEventListener('resize', updateVideoSize);
+        // Inicializar contador de 24 horas
+        function initCountdown() {
+            countdownEndTime = new Date();
+            countdownEndTime.setHours(countdownEndTime.getHours() + 24);
             
-            // Tentar autoplay assim que a página carregar
-            tryAutoplay();
+            updateCountdown();
             
-            // Clicar no hook principal também inicia o vídeo
+            timerInterval = setInterval(updateCountdown, 1000);
+        }
+        
+        // Atualizar o contador regressivo
+        function updateCountdown() {
+            const now = new Date();
+            const diff = countdownEndTime - now;
+            
+            if (diff <= 0) {
+                clearInterval(timerInterval);
+                hoursElem.textContent = "00";
+                minutesElem.textContent = "00";
+                secondsElem.textContent = "00";
+                return;
+            }
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            hoursElem.textContent = hours < 10 ? "0" + hours : hours;
+            minutesElem.textContent = minutes < 10 ? "0" + minutes : minutes;
+            secondsElem.textContent = seconds < 10 ? "0" + seconds : seconds;
+        }
+        
+        // Carregar a API do YouTube
+        function loadYouTubeAPI() {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+        
+        // Iniciar o player quando a API estiver pronta
+        window.onYouTubeIframeAPIReady = function() {
+            createYouTubePlayer();
+        };
+        
+        // Criar o player do YouTube
+        function createYouTubePlayer() {
+            player = new YT.Player('youtube-player-container', {
+                videoId: youtubeVideoId,
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0, // Sem controles nativos
+                    'rel': 0, // Sem vídeos relacionados
+                    'showinfo': 0, // Sem informações
+                    'modestbranding': 1, // Branding mínimo
+                    'fs': 0, // Sem botão de tela cheia nativo
+                    'cc_load_policy': 0, // Sem legendas
+                    'iv_load_policy': 3, // Sem anotações
+                    'disablekb': 1, // Desativar controles de teclado
+                    'origin': window.location.origin // Importante para segurança
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        // Quando o player estiver pronto
+        function onPlayerReady(event) {
+            console.log('Player pronto');
+            
+            // Definir os event listeners
+            setupEventListeners();
+            
+            // Iniciar verificação da smart bar
+            startProgressChecking();
+            
+            // Iniciar contador regressivo
+            initCountdown();
+        }
+        
+        // Configurar os listeners de eventos
+        function setupEventListeners() {
+            // Clicar no overlay inicia o vídeo
+            videoOverlay.addEventListener('click', startVideo);
+            
+            // Clicar no hook também inicia o vídeo
             mainHook.addEventListener('click', () => {
-                if (isPaused) {
-                    playVideo();
-                    // Rolar suavemente para o vídeo
-                    document.querySelector('.video-container').scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }
-            });
-            
-            // Player e controles
-            playPauseBtn.addEventListener('click', togglePlayPause);
-            video.addEventListener('click', togglePlayPause);
-            video.addEventListener('timeupdate', updateSmartProgress);
-            video.addEventListener('ended', videoEnded);
-            
-            // ThumbSniper events
-            retentionThumbnailEarly.querySelector('.continue-btn').addEventListener('click', () => {
-                retentionThumbnailEarly.classList.remove('visible');
-                playVideo();
-            });
-            
-            retentionThumbnailLate.querySelector('.continue-btn').addEventListener('click', () => {
-                retentionThumbnailLate.classList.remove('visible');
-                playVideo();
-            });
-            
-            // Autoplay message - MODIFICADO para garantir o reinício e som
-            autoplayMessage.addEventListener('click', () => {
-                autoplayMessage.classList.remove('visible');
-                
-                // Reiniciar o vídeo do início
-                video.currentTime = 0;
-                
-                // Garantir que o som esteja ativado
-                video.muted = false;
-                
-                // Forçar uma pequena pausa antes de dar play (ajuda com problemas de áudio)
-                pauseVideo();
-                
-                // Pequeno delay para garantir que o som funcione
-                setTimeout(() => {
-                    playVideo();
-                }, 100);
-            });
-        });
-        
-        // Atualizar dimensões do vídeo com base no tamanho da tela
-        function updateVideoSize() {
-            // Ajustes adicionais para diferentes dispositivos
-            const isMobile = window.innerWidth <= 768;
-            const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
-            const isDesktop = window.innerWidth > 1024;
-            
-            // Ajustes específicos para cada tipo de dispositivo
-            if (isMobile) {
-                document.querySelector('.custom-controls').style.padding = '8px';
-            } else if (isTablet) {
-                // Ajustes específicos para tablet
-            } else if (isDesktop) {
-                // Ajustes específicos para desktop
-            }
-        }
-        
-        // Tenta iniciar autoplay
-        function tryAutoplay() {
-            // Iniciar vídeo mudo (para contornar as restrições de autoplay)
-            video.muted = true;
-            
-            const playPromise = video.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    // Autoplay permitido!
-                    isPaused = false;
-                    playIcon.classList.remove('fa-play');
-                    playIcon.classList.add('fa-pause');
-                    
-                    // Mostrar mensagem para ativar som
-                    autoplayMessage.classList.add('visible');
-                }).catch(error => {
-                    // Autoplay não permitido
-                    console.log('Autoplay prevented:', error);
-                    
-                    // Mostrar mensagem para iniciar manualmente
-                    autoplayMessage.classList.add('visible');
+                startVideo();
+                // Rolar para o vídeo
+                videoContainer.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'center'
                 });
-            }
-        }
-        
-        // Toggle play/pause
-        function togglePlayPause() {
-            if (video.paused) {
-                playVideo();
-            } else {
-                pauseVideo();
-                userPaused = true;
-                
-                // Implementação do ThumbSniper - Mostrar thumbnail quando pausado
-                const progress = video.currentTime / video.duration;
-                
-                if (progress < earlyDropOffPoint && !showedEarlyThumbnail) {
-                    retentionThumbnailEarly.classList.add('visible');
-                    showedEarlyThumbnail = true;
-                } else if (progress >= earlyDropOffPoint && progress < lateDropOffPoint && !showedLateThumbnail) {
-                    retentionThumbnailLate.classList.add('visible');
-                    showedLateThumbnail = true;
-                }
-            }
-        }
-        
-        // Play video
-        function playVideo() {
-            // Verificar se o vídeo está pronto para reprodução
-            if (video.readyState >= 2) {
-                video.play()
-                    .then(() => {
-                        isPaused = false;
-                        playIcon.classList.remove('fa-play');
-                        playIcon.classList.add('fa-pause');
-                        autoplayMessage.classList.remove('visible');
-                    })
-                    .catch(error => {
-                        console.error('Play failed:', error);
-                        // Tentar novamente com mudo
-                        video.muted = true;
-                        video.play()
-                            .then(() => {
-                                isPaused = false;
-                                playIcon.classList.remove('fa-play');
-                                playIcon.classList.add('fa-pause');
-                                // Mostrar mensagem para ativar som
-                                autoplayMessage.classList.add('visible');
-                            });
-                    });
-            } else {
-                // Aguardar pelo carregamento
-                video.addEventListener('canplay', function playWhenReady() {
-                    video.removeEventListener('canplay', playWhenReady);
-                    playVideo();
-                });
-            }
-        }
-        
-        // Pause video
-        function pauseVideo() {
-            video.pause();
-            isPaused = true;
-            playIcon.classList.remove('fa-pause');
-            playIcon.classList.add('fa-play');
-        }
-        
-        // Update Smart Progress Bar
-        function updateSmartProgress() {
-            // Implementação da barra de progresso inteligente
-            const currentTime = video.currentTime;
-            const duration = video.duration;
+            });
             
-            if (duration) {
-                // Cálculo do progresso real
-                const realProgress = currentTime / duration;
+            // Controle de progresso personalizado
+            progressContainer.addEventListener('click', (e) => {
+                if (!player) return;
                 
-                // Ajuste da velocidade da barra (mais rápida no início, normal no final)
-                let adjustedProgress;
-                if (realProgress < 0.3) {
-                    // Início do vídeo: progredir mais rápido
-                    adjustedProgress = realProgress * speedUpFactor;
+                const rect = progressContainer.getBoundingClientRect();
+                const clickPosition = (e.clientX - rect.left) / rect.width;
+                
+                // Converter a posição do clique de volta para o tempo real
+                let targetTime;
+                
+                if (clickPosition < 0.7) {
+                    // Clique nos primeiros 70% da barra corresponde aos primeiros 30% do vídeo
+                    targetTime = (clickPosition / 0.7) * 0.3 * player.getDuration();
                 } else {
-                    // Resto do vídeo: velocidade normal + ajuste para compensar o início rápido
-                    adjustedProgress = 0.3 * speedUpFactor + (realProgress - 0.3) * 0.7 / 0.7;
+                    // Clique nos últimos 30% da barra corresponde aos últimos 70% do vídeo
+                    targetTime = (0.3 + ((clickPosition - 0.7) / 0.3) * 0.7) * player.getDuration();
                 }
                 
-                // Limitar o progresso a 100%
-                adjustedProgress = Math.min(adjustedProgress, 1);
+                // Ir para o tempo calculado
+                player.seekTo(targetTime, true);
+            });
+            
+            // Botão de play/pause
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            
+            // Botão de continuar assistindo no overlay de pausa
+            continueButton.addEventListener('click', () => {
+                togglePlayPause();
+            });
+            
+            // Botão de tela cheia personalizado
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            // Botões CTA
+            ctaButtonFirst.addEventListener('click', () => {
+                window.location.href = 'https://pay.kiwify.com.br/BB2t1Zt';
+            });
+            
+            ctaButtonFinal.addEventListener('click', () => {
+                window.location.href = 'https://pay.kiwify.com.br/BB2t1Zt';
+            });
+            
+            // Ouvir eventos de tela cheia
+            document.addEventListener('fullscreenchange', updateFullscreenButtonState);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenButtonState);
+            document.addEventListener('mozfullscreenchange', updateFullscreenButtonState);
+            document.addEventListener('MSFullscreenChange', updateFullscreenButtonState);
+            
+            // Prevenção de saída da página
+            window.addEventListener('beforeunload', (e) => {
+                const message = 'Tem certeza que deseja sair? Sua oferta exclusiva será perdida!';
+                e.returnValue = message;
+                return message;
+            });
+        }
+        
+        // Iniciar o vídeo
+        function startVideo() {
+            if (!player) return;
+            
+            videoOverlay.classList.add('hidden');
+            player.playVideo();
+            videoStarted = true;
+            isPlaying = true;
+            
+            // Ativar automaticamente o som quando iniciar o vídeo
+            player.unMute();
+            player.setVolume(100);
+            
+            // Atualizar o ícone do botão play/pause
+            playPauseIcon.className = 'fas fa-pause';
+        }
+        
+        // Alternar play/pause
+        function togglePlayPause() {
+            if (!player) return;
+            
+            if (isPlaying) {
+                player.pauseVideo();
+                playPauseIcon.className = 'fas fa-play';
+                // Mostrar overlay de pausa
+                pauseOverlay.classList.add('visible');
+            } else {
+                player.playVideo();
+                playPauseIcon.className = 'fas fa-pause';
+                // Esconder overlay de pausa
+                pauseOverlay.classList.remove('visible');
+            }
+            
+            isPlaying = !isPlaying;
+        }
+        
+        // Alternar tela cheia
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    videoContainer.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+        
+        // Atualizar o estado do botão de tela cheia
+        function updateFullscreenButtonState() {
+            isFullscreen = !!document.fullscreenElement || 
+                        !!document.webkitFullscreenElement || 
+                        !!document.mozFullScreenElement ||
+                        !!document.msFullscreenElement;
+            
+            fullscreenBtn.innerHTML = isFullscreen ? 
+                '<i class="fas fa-compress"></i>' : 
+                '<i class="fas fa-expand"></i>';
+        }
+        
+        // Verificar o estado do player
+        function onPlayerStateChange(event) {
+            // Estados do player:
+            // -1 (não iniciado)
+            // 0 (terminado)
+            // 1 (reproduzindo)
+            // 2 (pausado)
+            // 3 (buffer)
+            // 5 (vídeo em fila)
+            
+            if (event.data === YT.PlayerState.PLAYING) {
+                if (!videoStarted) {
+                    videoStarted = true;
+                    videoOverlay.classList.add('hidden');
+                }
                 
-                // Atualizar a largura da barra de progresso
-                smartProgress.style.width = (adjustedProgress * 100) + '%';
+                isPlaying = true;
+                playPauseIcon.className = 'fas fa-pause';
+                pauseOverlay.classList.remove('visible');
                 
-                // Mostrar o CTA quando atingir determinado ponto
-                if (realProgress >= showCtaAt && !ctaButton.classList.contains('visible')) {
-                    ctaButton.classList.add('visible');
+                // Certificar-se de que o intervalo de progresso está rodando
+                startProgressChecking();
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                playPauseIcon.className = 'fas fa-play';
+                pauseOverlay.classList.add('visible');
+            }
+            
+            if (event.data === YT.PlayerState.ENDED) {
+                // Vídeo terminou, mostrar CTA final e completar a barra de progresso
+                if (!finalCtaShown) {
+                    showFinalCTA();
+                }
+                
+                // Completar a barra de progresso
+                smartProgress.style.width = '100%';
+                
+                // Parar a verificação de progresso
+                clearInterval(progressInterval);
+            }
+        }
+        
+        // Iniciar/continuar verificação de progresso com barra fictícia
+        function startProgressChecking() {
+            // Limpar intervalo anterior se existir
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
+            
+            // Atualização inicial
+            updateProgress();
+            
+            // Verificar a cada 250ms (4 vezes por segundo é suficiente para uma animação suave)
+            progressInterval = setInterval(updateProgress, 250);
+        }
+        
+        // Função para atualizar o progresso com a nova lógica simplificada da smartbar
+        function updateProgress() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            
+            try {
+                const currentTime = player.getCurrentTime();
+                const duration = player.getDuration();
+                
+                if (duration > 0) {
+                    // Calcular progresso real
+                    const realProgress = currentTime / duration;
                     
-                    // Rolar suavemente para o botão
-                    setTimeout(() => {
-                        ctaButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 500);
-                }
-                
-                // Mostrar Mini-Hook em momento estratégico
-                if (realProgress >= miniHookShowTime && !showedMiniHook) {
-                    miniHook.classList.add('visible');
-                    showedMiniHook = true;
+                    // Calcular progresso fictício usando esta fórmula simples:
+                    // - Primeira metade: avança muito rápido (70% da barra com 30% do vídeo)
+                    // - Segunda metade: avança muito devagar (30% da barra com 70% do vídeo)
+                    let fakeProgress;
                     
-                    // Esconder o Mini-Hook após alguns segundos
-                    setTimeout(() => {
-                        miniHook.classList.remove('visible');
-                    }, 5000);
+                    if (realProgress < 0.3) {
+                        // Primeiros 30% do vídeo preenchem 70% da barra (avanço rápido)
+                        fakeProgress = (realProgress / 0.3) * 0.7;
+                    } else {
+                        // Últimos 70% do vídeo preenchem apenas 30% da barra (avanço lento)
+                        fakeProgress = 0.7 + ((realProgress - 0.3) / 0.7) * 0.3;
+                    }
+                    
+                    // Garantir que a barra nunca volte para trás
+                    const currentWidth = parseFloat(smartProgress.style.width) || 0;
+                    if (fakeProgress < currentWidth / 100) {
+                        fakeProgress = currentWidth / 100;
+                    }
+                    
+                    // Limitar a 100%
+                    fakeProgress = Math.min(fakeProgress, 1);
+                    
+                    // Atualizar a barra de progresso
+                    smartProgress.style.width = (fakeProgress * 100) + '%';
+                    
+                    // Verificar mini-hook
+                    const percentComplete = realProgress * 100;
+                    if (percentComplete >= miniHookShowTime && !showedMiniHook) {
+                        showMiniHook();
+                    }
+                    
+                    // Verificar primeiro CTA (70%)
+                    if (percentComplete >= showFirstCtaAt && !firstCtaShown) {
+                        showFirstCTA();
+                    }
+                    
+                    // Verificar CTA final (95%)
+                    if (percentComplete >= showFinalCtaAt && !finalCtaShown) {
+                        showFinalCTA();
+                    }
                 }
+            } catch (error) {
+                console.error("Erro ao atualizar progresso:", error);
             }
         }
         
-        // Video ended
-        function videoEnded() {
-            isPaused = true;
-            playIcon.classList.remove('fa-pause');
-            playIcon.classList.add('fa-play');
-            
-            // Garantir que o CTA esteja visível
-            if (!ctaButton.classList.contains('visible')) {
-                ctaButton.classList.add('visible');
-                ctaButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+        // Mostrar mini-hook
+        function showMiniHook() {
+            miniHook.classList.add('visible');
+            showedMiniHook = true;
         }
         
-        // Integração com botão CTA
-        ctaButton.addEventListener('click', () => {
-            // Redirecionar para página de compra
-            window.location.href = 'https://pay.kiwify.com.br/BB2t1Zt';
-        });
-        
-        // Detectar e lidar com diferentes dispositivos
-        function detectDevice() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            const isIOS = /iphone|ipad|ipod/.test(userAgent);
-            const isAndroid = /android/.test(userAgent);
-            const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+        // Mostrar primeiro CTA (70%)
+        function showFirstCTA() {
+            ctaButtonFirst.classList.add('visible');
+            firstCtaShown = true;
             
-            // Aplicar ajustes específicos com base no dispositivo
-            if (isIOS) {
-                // Ajustes para iOS
-                document.documentElement.classList.add('ios-device');
-            } else if (isAndroid) {
-                // Ajustes para Android
-                document.documentElement.classList.add('android-device');
-            }
-            
-            if (isTablet) {
-                // Ajustes para tablets
-                document.documentElement.classList.add('tablet-device');
-            }
+            // Rolar para o botão
+            scrollToCTA(ctaButtonFirst);
         }
         
-        // Inicializar detecção de dispositivo
-        detectDevice();
+        // Mostrar CTA final e timer
+        function showFinalCTA() {
+            ctaButtonFinal.classList.add('visible');
+            timerContainer.classList.add('visible');
+            finalCtaShown = true;
+            
+            // Rolar para o botão final
+            scrollToCTA(ctaButtonFinal);
+        }
         
-        // Prevenção de saída da página
-        window.addEventListener('beforeunload', (e) => {
-            // A mensagem não aparecerá em navegadores modernos por segurança,
-            // mas ainda ajuda a acionar o diálogo padrão
-            const message = 'Tem certeza que deseja sair? Sua oferta exclusiva será perdida!';
-            e.returnValue = message;
-            return message;
+        // Função para rolar até o CTA
+        function scrollToCTA(button) {
+            setTimeout(() => {
+                button.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 500);
+        }
+        
+        // Iniciar o carregamento da API do YouTube
+        loadYouTubeAPI();
+        
+        // Ajustar o z-index dos elementos ao carregar
+        window.addEventListener('load', function() {
+            // Certificar-se de que a barra de controles está à frente
+            customControls.style.zIndex = "20";
+            
+            // Forçar o overlay acima do player
+            videoOverlay.style.zIndex = "30";
         });
     </script>
 </body>
