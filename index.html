@@ -178,6 +178,18 @@
         }
         
         .play-pause-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 13;
+            transition: all 0.2s ease;
             margin-right: 10px;
         }
         
@@ -664,10 +676,11 @@
         let countdownEndTime;
         let lastUpdateTime = 0;
         
-        // Inicializar contador de 24 horas
+        // Inicializar contador de 15 horas
         function initCountdown() {
             countdownEndTime = new Date();
-            countdownEndTime.setHours(countdownEndTime.getHours() + 24);
+            countdownEndTime.setHours(countdownEndTime.getHours() + 15);
+            countdownEndTime.setMinutes(countdownEndTime.getMinutes() - 1); // 14:59 em vez de 15:00
             
             updateCountdown();
             
@@ -744,6 +757,13 @@
             
             // Iniciar contador regressivo
             initCountdown();
+            
+            // Garantir que os z-indexes estão corretos
+            customControls.style.zIndex = "20";
+            videoOverlay.style.zIndex = "30";
+            
+            // Inicializar variável para controle de cliques nos CTAs
+            window.clickedCTA = false;
         }
         
         // Configurar os listeners de eventos
@@ -1040,13 +1060,65 @@
         // Iniciar o carregamento da API do YouTube
         loadYouTubeAPI();
         
-        // Ajustar o z-index dos elementos ao carregar
-        window.addEventListener('load', function() {
-            // Certificar-se de que a barra de controles está à frente
-            customControls.style.zIndex = "20";
+        // Variáveis para controle da ocultação automática
+        let controlsTimeout;
+        let userActive = true;
+        
+        // Função para ocultar controles após 3 segundos
+        function setupControlsAutoHide() {
+            const customControls = document.getElementById('custom-controls');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const smartProgress = document.getElementById('smart-progress');
+            const progressContainer = document.getElementById('progress-container');
+            const videoContainer = document.getElementById('video-container');
             
-            // Forçar o overlay acima do player
-            videoOverlay.style.zIndex = "30";
+            // Função para ocultar os controles
+            function hideControls() {
+                if (document.fullscreenElement) {
+                    customControls.classList.add('hidden');
+                    // Manter o botão de tela cheia visível
+                    fullscreenBtn.style.position = 'absolute';
+                    fullscreenBtn.style.right = '10px';
+                    fullscreenBtn.style.bottom = '10px';
+                }
+            }
+            
+            // Função para mostrar os controles
+            function showControls() {
+                customControls.classList.remove('hidden');
+                
+                // Limpar o timeout anterior e definir um novo
+                clearTimeout(controlsTimeout);
+                
+                if (document.fullscreenElement) {
+                    controlsTimeout = setTimeout(hideControls, 3000);
+                }
+            }
+            
+            // Mostrar controles ao mover o mouse ou tocar na tela
+            videoContainer.addEventListener('mousemove', showControls);
+            videoContainer.addEventListener('touchstart', showControls);
+            
+            // Ocultar controles ao entrar em tela cheia
+            document.addEventListener('fullscreenchange', function() {
+                if (document.fullscreenElement) {
+                    // Definir timeout para ocultar os controles após 3 segundos
+                    controlsTimeout = setTimeout(hideControls, 3000);
+                } else {
+                    // Mostrar controles e limpar o timeout ao sair da tela cheia
+                    clearTimeout(controlsTimeout);
+                    customControls.classList.remove('hidden');
+                    fullscreenBtn.style.position = 'relative';
+                    fullscreenBtn.style.right = 'auto';
+                    fullscreenBtn.style.bottom = 'auto';
+                }
+            });
+        }
+        
+        // Inicializar auto-ocultação dos controles
+        window.addEventListener('load', function() {
+            setupControlsAutoHide();
         });
     </script>
 </body>
