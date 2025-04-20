@@ -96,14 +96,14 @@
             margin: 0 auto; /* Centralizar horizontalmente */
         }
         
-        /* Bloqueador de interações com o YouTube */
-        .youtube-blocker {
+        /* Bloqueador de interações */
+        .interaction-blocker {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10; /* Acima do iframe, abaixo dos nossos controles */
+            z-index: 15;
             cursor: pointer;
         }
         
@@ -114,18 +114,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-        }
-        
-        /* Fix para ocultar o título e controles do YouTube */
-        .youtube-embed::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50px; /* Altura suficiente para cobrir a parte superior do player */
-            background-color: #000;
-            z-index: 11;
         }
         
         /* Fix para ocultar o título e controles do YouTube */
@@ -151,7 +139,8 @@
             padding: 5px 10px;
             display: flex;
             align-items: center;
-            z-index: 12;
+            z-index: 20;
+            pointer-events: none; /* Desativa interações com os controles */
         }
         
         .progress-container {
@@ -161,8 +150,9 @@
             position: relative;
             border-radius: 5px;
             overflow: hidden;
-            cursor: pointer;
+            cursor: default; /* Remover cursor pointer */
             margin-right: 10px;
+            pointer-events: none; /* Desativa interações com a barra de progresso */
         }
         
         .smart-progress {
@@ -173,61 +163,38 @@
             border-radius: 5px;
         }
         
-        .fullscreen-btn, .play-pause-btn {
-            background-color: transparent;
-            border: none;
+        /* Botões com interação permitida */
+        .control-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
             color: white;
             font-size: 16px;
             cursor: pointer;
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 13;
             transition: all 0.2s ease;
+            z-index: 25; /* Acima do bloqueador */
+            pointer-events: auto; /* Permite interações */
+            position: absolute;
         }
         
-        .play-pause-btn {
-            background-color: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 13;
-            transition: all 0.2s ease;
-            margin-right: 10px;
-        }
-        
-        .fullscreen-btn:hover, .play-pause-btn:hover {
+        .control-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
             color: #0de6a0;
         }
         
-        /* Botão de volume inteligente */
-        .volume-btn {
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 13;
-            border-radius: 50%;
-            margin-right: 10px;
-            transition: all 0.3s ease;
+        .play-pause-btn {
+            bottom: 10px;
+            left: 10px;
         }
         
-        .volume-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+        .fullscreen-btn {
+            bottom: 10px;
+            right: 10px;
         }
         
         /* Mensagem de pausa do vídeo */
@@ -279,6 +246,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 41;
         }
         
         .continue-button:hover {
@@ -326,7 +294,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 15;
+            z-index: 30;
             cursor: pointer;
         }
         
@@ -388,7 +356,7 @@
             width: 100%;
             max-width: 500px;
             padding: clamp(15px, 4vw, 20px) clamp(25px, 8vw, 36px);
-            background: linear-gradient(135deg, #ff5a5f, #ff3b3f);
+            background: linear-gradient(135deg, #00d170, #07a358);
             color: white;
             border: none;
             border-radius: 8px;
@@ -398,7 +366,7 @@
             transition: all 0.3s ease;
             display: none;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(255, 59, 63, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 209, 112, 0.5);
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
@@ -410,27 +378,27 @@
         
         .cta-button:hover {
             transform: translateY(-3px) scale(1.03);
-            background: linear-gradient(135deg, #ff3b3f, #ff2a2f);
-            box-shadow: 0 6px 25px rgba(255, 59, 63, 0.6);
+            background: linear-gradient(135deg, #07a358, #058a49);
+            box-shadow: 0 6px 25px rgba(0, 209, 112, 0.6);
         }
         
         .cta-button:active {
             transform: translateY(1px);
-            box-shadow: 0 2px 10px rgba(255, 59, 63, 0.4);
+            box-shadow: 0 2px 10px rgba(0, 209, 112, 0.4);
         }
         
         @keyframes pulse-cta {
             0% {
                 transform: scale(1);
-                box-shadow: 0 4px 20px rgba(255, 59, 63, 0.5);
+                box-shadow: 0 4px 20px rgba(0, 209, 112, 0.5);
             }
             70% {
                 transform: scale(1.03);
-                box-shadow: 0 0 25px rgba(255, 59, 63, 0.7);
+                box-shadow: 0 0 25px rgba(0, 209, 112, 0.7);
             }
             100% {
                 transform: scale(1);
-                box-shadow: 0 4px 20px rgba(255, 59, 63, 0.5);
+                box-shadow: 0 4px 20px rgba(0, 209, 112, 0.5);
             }
         }
         
@@ -591,25 +559,24 @@
                 </button>
             </div>
             
-                    <!-- Smart Progress Bar e Controles Personalizados -->
+            <!-- Bloqueador de interações -->
+            <div class="interaction-blocker" id="interaction-blocker"></div>
+            
+            <!-- Controles personalizados -->
             <div class="custom-controls" id="custom-controls">
-                <button class="play-pause-btn" id="play-pause-btn">
-                    <i class="fas fa-pause" id="play-pause-icon"></i>
-                </button>
                 <div class="progress-container" id="progress-container">
                     <div class="smart-progress" id="smart-progress"></div>
                 </div>
             </div>
             
-            <!-- Botão de tela cheia sempre visível -->
-            <div class="fullscreen-btn-container" id="fullscreen-btn-container">
-                <button class="fullscreen-btn" id="fullscreen-btn">
-                    <i class="fas fa-expand" id="fullscreen-icon"></i>
-                </button>
-            </div>
+            <!-- Botões de controle independentes permitidos -->
+            <button class="control-button play-pause-btn" id="play-pause-btn">
+                <i class="fas fa-pause" id="play-pause-icon"></i>
+            </button>
             
-            <!-- Bloqueador de interações com o YouTube -->
-            <div class="youtube-blocker" id="youtube-blocker"></div>
+            <button class="control-button fullscreen-btn" id="fullscreen-btn">
+                <i class="fas fa-expand" id="fullscreen-icon"></i>
+            </button>
         </div>
         
         <!-- Mini-Hook (movido para fora do vídeo) -->
@@ -675,8 +642,10 @@
         const smartProgress = document.getElementById('smart-progress');
         const progressContainer = document.getElementById('progress-container');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const fullscreenIcon = document.getElementById('fullscreen-icon');
         const videoContainer = document.getElementById('video-container');
         const customControls = document.getElementById('custom-controls');
+        const interactionBlocker = document.getElementById('interaction-blocker');
         const hoursElem = document.getElementById('hours');
         const minutesElem = document.getElementById('minutes');
         const secondsElem = document.getElementById('seconds');
@@ -692,7 +661,7 @@
         let progressInterval;
         let timerInterval;
         let countdownEndTime;
-        let lastUpdateTime = 0;
+        let clickedCTA = false;
         
         // Inicializar contador de 15 horas
         function initCountdown() {
@@ -775,12 +744,6 @@
             
             // Iniciar contador regressivo
             initCountdown();
-            
-            // Inicializar variável para controle de cliques nos CTAs
-            window.clickedCTA = false;
-            
-            // Configurar timer inicial para ocultar os controles após 3 segundos
-            resetControlsHideTimer();
         }
         
         // Configurar os listeners de eventos
@@ -798,45 +761,54 @@
                 });
             });
             
-            // Controle de progresso personalizado
-            progressContainer.addEventListener('click', (e) => {
-                if (!player) return;
-                
-                const rect = progressContainer.getBoundingClientRect();
-                const clickPosition = (e.clientX - rect.left) / rect.width;
-                
-                // Converter a posição do clique de volta para o tempo real
-                let targetTime;
-                
-                if (clickPosition < 0.7) {
-                    // Clique nos primeiros 70% da barra corresponde aos primeiros 30% do vídeo
-                    targetTime = (clickPosition / 0.7) * 0.3 * player.getDuration();
-                } else {
-                    // Clique nos últimos 30% da barra corresponde aos últimos 70% do vídeo
-                    targetTime = (0.3 + ((clickPosition - 0.7) / 0.3) * 0.7) * player.getDuration();
+            // Bloqueador de interações com YouTube apenas passa cliques para botões específicos
+            interactionBlocker.addEventListener('click', (e) => {
+                // Se o vídeo ainda não começou, inicia-lo
+                if (!videoStarted) {
+                    startVideo();
+                    return;
                 }
                 
-                // Ir para o tempo calculado
-                player.seekTo(targetTime, true);
+                // Alternar entre pausar/reproduzir ao clicar no bloqueador
+                togglePlayPause();
             });
             
             // Botão de play/pause
-            playPauseBtn.addEventListener('click', togglePlayPause);
+            playPauseBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Impedir propagação para o bloqueador
+                togglePlayPause();
+            });
             
             // Botão de continuar assistindo no overlay de pausa
-            continueButton.addEventListener('click', () => {
+            continueButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Impedir propagação
                 togglePlayPause();
             });
             
             // Botão de tela cheia personalizado
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            fullscreenBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Impedir propagação para o bloqueador
+                toggleFullscreen();
+            });
             
-            // Botões CTA
+            // Prevenção de saída da página - Apenas quando não estiver clicando em CTAs
+            window.addEventListener('beforeunload', (e) => {
+                // Verificar se o clique foi em um CTA
+                if (!clickedCTA) {
+                    const message = 'Tem certeza que deseja sair? Sua oferta exclusiva será perdida!';
+                    e.returnValue = message;
+                    return message;
+                }
+            });
+            
+            // Adicionar flags para os CTAs
             ctaButtonFirst.addEventListener('click', () => {
+                clickedCTA = true;
                 window.location.href = 'https://pay.kiwify.com.br/BB2t1Zt';
             });
             
             ctaButtonFinal.addEventListener('click', () => {
+                clickedCTA = true;
                 window.location.href = 'https://pay.kiwify.com.br/BB2t1Zt';
             });
             
@@ -845,13 +817,6 @@
             document.addEventListener('webkitfullscreenchange', updateFullscreenButtonState);
             document.addEventListener('mozfullscreenchange', updateFullscreenButtonState);
             document.addEventListener('MSFullscreenChange', updateFullscreenButtonState);
-            
-            // Prevenção de saída da página
-            window.addEventListener('beforeunload', (e) => {
-                const message = 'Tem certeza que deseja sair? Sua oferta exclusiva será perdida!';
-                e.returnValue = message;
-                return message;
-            });
         }
         
         // Iniciar o vídeo
@@ -869,9 +834,6 @@
             
             // Atualizar o ícone do botão play/pause
             playPauseIcon.className = 'fas fa-pause';
-            
-            // Iniciar o timer para ocultar os controles
-            resetControlsHideTimer();
         }
         
         // Alternar play/pause
@@ -923,47 +885,9 @@
                         !!document.mozFullScreenElement ||
                         !!document.msFullscreenElement;
             
-            const fullscreenIcon = document.getElementById('fullscreen-icon');
             fullscreenIcon.className = isFullscreen ? 
                 'fas fa-compress' : 
                 'fas fa-expand';
-            
-            // Mostrar controles brevemente quando mudar o estado da tela cheia
-            showControls();
-            resetControlsHideTimer();
-        }
-        
-        // Variáveis para gerenciar a visibilidade dos controles
-        let controlsHideTimer;
-        
-        // Mostrar os controles
-        function showControls() {
-            const customControls = document.getElementById('custom-controls');
-            customControls.classList.remove('hidden');
-        }
-        
-        // Esconder os controles
-        function hideControls() {
-            const customControls = document.getElementById('custom-controls');
-            customControls.classList.add('hidden');
-        }
-        
-        // Resetar o timer de ocultação dos controles
-        function resetControlsHideTimer() {
-            clearTimeout(controlsHideTimer);
-            controlsHideTimer = setTimeout(hideControls, 3000); // Ocultar após 3 segundos
-        }
-        
-        // Alternar a visibilidade dos controles
-        function toggleControlsVisibility() {
-            const customControls = document.getElementById('custom-controls');
-            
-            if (customControls.classList.contains('hidden')) {
-                showControls();
-                resetControlsHideTimer();
-            } else {
-                hideControls();
-            }
         }
         
         // Verificar o estado do player
@@ -988,18 +912,10 @@
                 
                 // Certificar-se de que o intervalo de progresso está rodando
                 startProgressChecking();
-                
-                // Ocultar controles após alguns segundos
-                resetControlsHideTimer();
             } else if (event.data === YT.PlayerState.PAUSED) {
                 isPlaying = false;
                 playPauseIcon.className = 'fas fa-play';
                 pauseOverlay.classList.add('visible');
-                
-                // Mostrar controles quando pausado
-                showControls();
-                // Não ocultar os controles enquanto estiver pausado
-                clearTimeout(controlsHideTimer);
             }
             
             if (event.data === YT.PlayerState.ENDED) {
@@ -1013,10 +929,6 @@
                 
                 // Parar a verificação de progresso
                 clearInterval(progressInterval);
-                
-                // Mostrar controles no final do vídeo
-                showControls();
-                clearTimeout(controlsHideTimer);
             }
         }
         
@@ -1130,65 +1042,14 @@
         // Iniciar o carregamento da API do YouTube
         loadYouTubeAPI();
         
-        // Variáveis para controle da ocultação automática
-        let controlsTimeout;
-        let userActive = true;
-        
-        // Função para ocultar controles após 3 segundos
-        function setupControlsAutoHide() {
-            const customControls = document.getElementById('custom-controls');
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-            const smartProgress = document.getElementById('smart-progress');
-            const progressContainer = document.getElementById('progress-container');
-            const videoContainer = document.getElementById('video-container');
-            
-            // Função para ocultar os controles
-            function hideControls() {
-                if (document.fullscreenElement) {
-                    customControls.classList.add('hidden');
-                    // Manter o botão de tela cheia visível
-                    fullscreenBtn.style.position = 'absolute';
-                    fullscreenBtn.style.right = '10px';
-                    fullscreenBtn.style.bottom = '10px';
-                }
-            }
-            
-            // Função para mostrar os controles
-            function showControls() {
-                customControls.classList.remove('hidden');
-                
-                // Limpar o timeout anterior e definir um novo
-                clearTimeout(controlsTimeout);
-                
-                if (document.fullscreenElement) {
-                    controlsTimeout = setTimeout(hideControls, 3000);
-                }
-            }
-            
-            // Mostrar controles ao mover o mouse ou tocar na tela
-            videoContainer.addEventListener('mousemove', showControls);
-            videoContainer.addEventListener('touchstart', showControls);
-            
-            // Ocultar controles ao entrar em tela cheia
-            document.addEventListener('fullscreenchange', function() {
-                if (document.fullscreenElement) {
-                    // Definir timeout para ocultar os controles após 3 segundos
-                    controlsTimeout = setTimeout(hideControls, 3000);
-                } else {
-                    // Mostrar controles e limpar o timeout ao sair da tela cheia
-                    clearTimeout(controlsTimeout);
-                    customControls.classList.remove('hidden');
-                    fullscreenBtn.style.position = 'relative';
-                    fullscreenBtn.style.right = 'auto';
-                    fullscreenBtn.style.bottom = 'auto';
-                }
-            });
-        }
-        
-        // Inicializar auto-ocultação dos controles
+        // Ajustar o z-index dos elementos ao carregar
         window.addEventListener('load', function() {
-            setupControlsAutoHide();
+            // Certificar-se de que os z-indices estão corretos
+            customControls.style.zIndex = "20";
+            interactionBlocker.style.zIndex = "15";
+            playPauseBtn.style.zIndex = "25";
+            fullscreenBtn.style.zIndex = "25";
+            videoOverlay.style.zIndex = "30";
         });
     </script>
 </body>
